@@ -6,7 +6,7 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: cloud-computing-kubex01
+      app: cloudbuildingkub
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,12 +15,12 @@ spec:
   template:
     metadata:
       labels:
-        app: cloud-computing-kubex01
+        app: cloudbuildingkub
         version: "v1"
     spec:
       containers:
         - name: cloud-computing-kub
-          image: 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/cloud-computing-kubernate-service/cloud-computing-kubernate-service-image:v1'
+          image: 'us-central1-docker.pkg.dev/cloudbuildingkub/cloudbuildkubex1/cloud-computing-kubernate-service/cloud-computing-kubernate-service-image:v1'
           volumeMounts:
           - mountPath: /data/redis
             name: cloud-computing-kubex01-volume
@@ -52,6 +52,6 @@ spec:
       targetPort: 8080
       protocol: TCP
   selector:
-    app: cloud-computing-kubex01
+    app: cloudbuildingkub
     version: "v1"
   type: LoadBalancer
