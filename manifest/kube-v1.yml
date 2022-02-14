@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: AAA
+  name: cloud-computing-kubex01
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: AAA
+      app: cloud-computing-kubex01
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,26 +15,26 @@ spec:
   template:
     metadata:
       labels:
-        app: AAA
+        app: cloud-computing-kubex01
         version: "v1"
     spec:
       containers:
         - name: cloud-computing-kub
-          image: 'Artifactlocation:v1'
+          image: 'us-central1-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/cloud-computing-kubernate-service/cloud-computing-kubernate-service-image:v1'
           volumeMounts:
           - mountPath: /data/redis
-            name: AAAA-volume
+            name: cloud-computing-kubex01-volume
           
           ports:
             - containerPort: 8080
           readinessProbe:
             httpGet:
-              path: /lazy
+              path: /Niro
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5
       volumes:
-        - name: AAAA-volume
+        - name: cloud-computing-kubex01-volume
           emptyDir: {}
           
       
@@ -42,9 +42,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ABC
+  name: cloud-computing-kubex01
   labels:
-    name: ABC
+    name: cloud-computing-kubex01
     version: "v1"
 spec:
   ports:
@@ -52,6 +52,6 @@ spec:
       targetPort: 8080
       protocol: TCP
   selector:
-    app: ABC
+    app: cloud-computing-kubex01
     version: "v1"
   type: LoadBalancer
