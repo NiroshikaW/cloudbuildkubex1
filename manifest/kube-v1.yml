@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: AAA
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: AAA
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: AAA
+        version: "v1"
+    spec:
+      containers:
+        - name: ABC
+          image: 'Artifactlocation:v1'
+          volumeMounts:
+          - mountPath: /data/redis
+            name: AAAA-volume
+          
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /lazy
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: AAAA-volume
+          emptyDir: {}
+          
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ABC
+  labels:
+    name: ABC
+    version: "v1"
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: ABC
+    version: "v1"
+  type: LoadBalancer
