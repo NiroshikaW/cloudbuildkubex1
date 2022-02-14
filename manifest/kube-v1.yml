@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloud-computing-kubex01
+  name: cloud-computing-kub-v1
 spec:
   replicas: 2
   selector:
@@ -23,7 +23,7 @@ spec:
           image: 'us-central1-docker.pkg.dev/cloudbuildingkub/cloudbuildkubex1/cloud-computing-kubernate-service/cloud-computing-kubernate-service-image:v1'
           volumeMounts:
           - mountPath: /data/redis
-            name: cloud-computing-kubex01-volume
+            name: cloud-computing-kub-volume
           
           ports:
             - containerPort: 8080
@@ -34,7 +34,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
       volumes:
-        - name: cloud-computing-kubex01-volume
+        - name: cloud-computing-kub-volume
           emptyDir: {}
           
       
@@ -42,9 +42,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cloud-computing-kubex01
+  name: cloud-computing-kub
   labels:
-    name: cloud-computing-kubex01
+    name: cloud-computing-kub
     version: "v1"
 spec:
   ports:
