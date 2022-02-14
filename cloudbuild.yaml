@@ -1,0 +1,60 @@
+# Clone the git repo.
+  #id field to set a unique identifier for a build step.
+  # <github_repository> is the name of the gethub repository to be clone
+  #args take a list of arguments 
+  steps:
+  
+  # Run tests and save to file
+  - name: golang
+    id: 'Report'
+    entrypoint: /bin/bash
+    args: 
+      - -c
+      - |
+        go get -u github.com/jstemmer/go-junit-report
+        2>&1 go test -timeout 1m -v ./... | tee sponge.log
+        /go/bin/go-junit-report -set-exit-code < sponge.log > v1_test_log.xml
+  # [END cloudbuild_go_test_yaml]
+  - name: 'gcr.io/cloud-builders/git'
+    id: 'Clone Code'
+    args: ['clone', 'https://github.com/IamPeterPan/cloudbuildingtest-main-check.git']
+  
+ #builds the container image.
+  #build is the entrypoint to the Docker cloud builder
+  #-t is the Docker tag
+  #<preffered_image_name> is the name of the image to be built
+  #. is the location of the source code
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args:
+    - 'build'
+    - '-t'
+    - 'Artifactlocatiom:v1'
+    - '.'
+  # pushes the image to Container Registry
+   # The PROJECT_ID and SHORT_SHA variables are automatically replaced by Cloud Build.
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Image'
+    args:
+    - 'push'
+    - 'Artifactlocation:v1'
+    
+    
+  # This step deploys the new version of our container image
+  # in the cloud-computing-assignment Kubernetes Engine cluster.
+    
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy Image'
+    args: ['apply', '-f', 'manifest/kube-b.yml']
+    env:
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=Clustername'
+
+
+# Store images in Google Artifact Registry
+images:
+  - artifactlocation:v1
+  
+  
+  
